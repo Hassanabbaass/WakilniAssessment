@@ -1,0 +1,19 @@
+/*--------------------------Navbar Styles------------------------*/
+.navstyle{
+    background-color: #2b7a78;
+}
+.navtitle{
+    font-weight: bold;
+    color: #17252a;
+}
+.navlink{
+    text-decoration: none;
+    color: white;
+}
+.navbtn{
+    border-radius: 12px;
+    background-color: #17252a;
+    margin: 10px;
+}
+
+/*--------------------------Product Type Page Styles------------------------*/
