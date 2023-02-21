@@ -1,0 +1,78 @@
+
+/*--------------------------Navbar Style------------------------*/
+.navstyle{
+    background-color: #2b7a78 !important;
+}
+.navtitle{
+    font-weight: bold;
+    color: #17252a !important;
+}
+.navlink{
+    text-decoration: none;
+    color: white !important;
+}
+.navbtn{
+    border-radius: 12px;
+    background-color: #17252a !important;
+    margin: 10px;
+}
+
+
+/*--------------------------Product Type Page Styles------------------------*/
+.productTypeImageStyle{
+    height: 40px;
+    border-radius: 50%;
+    width: auto;
+}
+
+.productTypeDiv{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 6vh;
+    height: 100vh;
+    background-color: #def2f1 !important;
+}
+
+.productTypeButton{
+    margin: 5px;
+}
+
+.productTypeh1{
+    color: #17252a !important;
+}
+
+.searchDiv{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.searchbar{
+    background-color: white;
+    width: 25vw;
+    margin: 5px;
+}
+
+.addnewproducttypebutton{
+    background-color: #17252a !important;
+    margin: 5px;
+    height: 7vh;
+}
+.addnewproducttypebutton:hover{
+    background-color: #2b7a78 !important;
+}
+
+.productTableRow{
+    cursor: pointer;
+}
+
+/*--------------------------Item Page Styles------------------------*/
+.itemsDiv{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 6vh;
+    height: 100vh;
+    background-color: #cbd8ea !important;
+}

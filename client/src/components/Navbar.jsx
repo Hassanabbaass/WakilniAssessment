@@ -6,7 +6,6 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { Typography } from '@mui/material';
 
-import '../styles.css'
 
 const Navbar = () => {
   return (
@@ -20,9 +19,9 @@ const Navbar = () => {
                     <Button className='navbtn' color="inherit">
                         <Link className='navlink' to='/'>Product Types</Link> 
                     </Button>
-                    <Button className='navbtn' color='inherit'>
+                    {/* <Button className='navbtn' color='inherit'>
                         <Link className='navlink' to='/items'>Items</Link>
-                    </Button>
+                    </Button> */}
                 </Toolbar>
             </AppBar>
         </Box>

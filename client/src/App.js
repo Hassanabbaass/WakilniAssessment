@@ -3,11 +3,11 @@ import {
   Outlet,
   RouterProvider,
 } from "react-router-dom";
-
 import Navbar from "./components/Navbar";
 import ItemsPage from "./pages/ItemsPage";
 import ProductTypesPage from "./pages/ProductTypesPage";
 
+import './styling.css'
 
 const Layout = () => {
   return (
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
         element: <ProductTypesPage/>
       },
       {
-        path: '/items',
+        path: '/items/:id',
         element: <ItemsPage/>
       }
     ]
