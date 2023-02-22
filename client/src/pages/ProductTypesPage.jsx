@@ -63,7 +63,7 @@ const ProductTypesPage = () => {
 
   return (
     <div className='productTypeDiv'>
-      <h1 className='productTypeh1'>Product Type Page</h1>
+      <h2 className='productTypeh1'>Product Type Page</h2>
       <div className="searchDiv">
         <TextField
             className='searchbar'

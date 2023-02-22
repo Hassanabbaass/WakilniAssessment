@@ -11,6 +11,9 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import Checkbox from '@mui/material/Checkbox';
+import { Link } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const Modalstyle = {
     position: 'absolute',
@@ -53,7 +56,10 @@ const ItemsPage = () => {
 ];
   return (
     <div className='itemsDiv'>
-    <h1 className='productTypeh1'>Items Page</h1>
+    <Button className='navbtn' color="inherit">
+        <Link className='navlink' to='/'><ArrowBackIcon/>Home</Link> 
+    </Button>
+    <h2 className='productTypeh1'>Items Page</h2>
     <div className="searchDiv">
       <TextField
           className='searchbar'
@@ -72,6 +78,7 @@ const ItemsPage = () => {
             <TableCell align='center'>Name</TableCell>
             <TableCell align="center">Serial Number</TableCell>
             <TableCell align="center">Tools</TableCell>
+            <TableCell align="center">SOLD</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -80,18 +87,21 @@ const ItemsPage = () => {
               key={item.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell align="center" className='productTableRow'>
+              <TableCell align="center">
                 {item.id}
               </TableCell>
-              <TableCell align="center" className='productTableRow'>
+              <TableCell align="center">
                 {item.name}
               </TableCell>
-              <TableCell align="center" className='productTableRow'>
+              <TableCell align="center">
                 {item.serialNumber}
               </TableCell>
               <TableCell align="center">
                 <Button className='productTypeButton' variant='contained' color='primary' onClick={handleOpen2} >Edit</Button>
                 <Button className='productTypeButton' variant='contained' color='error'>Remove</Button>
+              </TableCell>
+              <TableCell align="center">
+                <Checkbox/>
               </TableCell>
             </TableRow>
           ))}

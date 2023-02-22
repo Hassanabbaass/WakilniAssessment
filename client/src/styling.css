@@ -5,15 +5,20 @@
 }
 .navtitle{
     font-weight: bold;
-    color: #17252a !important;
+    color: #ffffff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .navlink{
     text-decoration: none;
-    color: white !important;
+    color: #ffffff !important;
 }
 .navbtn{
+    height: 3rem;
+    font-size: 30px;
     border-radius: 12px;
-    background-color: #17252a !important;
+    background-color: #2b7a78 !important;
     margin: 10px;
 }
 
