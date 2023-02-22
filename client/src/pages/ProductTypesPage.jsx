@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,6 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import { getProductTypes } from '../services/getProductTypes';
+import { addProductType } from '../services/addProductType';
+import { deleteProductTypes } from '../services/deleteProductType';
+import { updateProductType } from '../services/updateProductType';
 
 const Modalstyle = {
   position: 'absolute',
@@ -42,20 +46,65 @@ const ProductTypesPage = () => {
 
     const navigate = useNavigate();
 
-    const productTypeData = [
-    {
-      id: 1,
-      productType: "Lego",
-      count: '10',
-      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/LEGO_logo.svg/800px-LEGO_logo.svg.png",
-    },
-    {
-      id: 2,
-      productType: "Video games",
-      count: '3',
-      img: "https://hips.hearstapps.com/hmg-prod/images/most-popular-video-games-of-2022-1642612227.png",
-    },
-  ];
+    const [newProductType, setNewProductType] = useState({
+      product_type_name: "",
+      image: ""
+    })
+
+    const handleAddProductType = (e) => {
+      e.preventDefault();
+      addProductType(newProductType).then((result) => {
+        console.log(result.data)
+      }).catch((err)=> {
+        console.log(err)
+      })
+    }
+
+    const handleRemoveProductType = (prodTypeId) => {
+      deleteProductTypes(prodTypeId).then((result) => {
+        console.log(result)
+      }).catch((err)=> {
+        console.log(err)
+      })
+    }
+    
+    const [editModal, setEditModal] = useState({
+      id: "",
+      product_type_name: "",
+      image: ""
+    })
+
+    const [editProductType , setEditProductType] = useState({
+      product_type_name: "",
+      image: ""
+    })
+    const handleEditProductType = (prodTypeId) => {
+      updateProductType(editProductType, prodTypeId).then((result) => {
+        console.log(result)
+      }).catch((err)=> {
+        console.log(err)
+      })
+    }
+
+    const [productTypeData, setProductTypeData] = useState([])
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredData, setFilteredData] = useState([]);
+
+    const handleSearch = (e) => {
+      const value = e.target.value.toLowerCase();
+      setSearchTerm(value)
+      const filtered = productTypeData.filter(item => item.product_type_name.toLowerCase().includes(value))
+      setFilteredData(filtered)
+    }
+
+    useEffect(() => {
+      getProductTypes().then((result) => {
+        setProductTypeData(result.data)
+        setFilteredData(result.data)
+      }).catch((err) => {
+        console.log(err)
+      })
+    }, [])
 
   const handleGoTo = (id) => {
     navigate(`/items/${id}`)
@@ -71,6 +120,7 @@ const ProductTypesPage = () => {
             label="Search by product type name"
             multiline
             maxRows={4}
+            onChange={handleSearch}
           />
         <Button onClick={handleOpen} className='addnewproducttypebutton' variant='contained'>Add New Product Type</Button>
       </div>
@@ -86,26 +136,29 @@ const ProductTypesPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {productTypeData.map((item) => (
+            {filteredData.map((item) => (
               <TableRow
                 key={item.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell align='center' className='productTableRow' onClick={()=>handleGoTo(item.id)}>
-                  <img className='productTypeImageStyle' alt='' src={item.img}/>
+                  <img className='productTypeImageStyle' alt='' src={item.image}/>
                 </TableCell >
                 <TableCell align="center" className='productTableRow' onClick={()=>handleGoTo(item.id)}>
                   {item.id}
                 </TableCell>
                 <TableCell align="center" className='productTableRow' onClick={()=>handleGoTo(item.id)}>
-                  {item.productType}
+                  {item.product_type_name}
                 </TableCell>
                 <TableCell align="center" className='productTableRow' onClick={()=>handleGoTo(item.id)}>
-                  {item.count}
+                  {item.itemcount}
                 </TableCell>
                 <TableCell align="center">
-                  <Button className='productTypeButton' variant='contained' color='primary' onClick={handleOpen2} >Edit</Button>
-                  <Button className='productTypeButton' variant='contained' color='error'>Remove</Button>
+                  <Button className='productTypeButton' variant='contained' color='primary' onClick={()=>{
+                    handleOpen2()
+                    setEditModal(item)
+                    }} >Edit</Button>
+                  <Button className='productTypeButton' variant='contained' color='error' onClick={() => handleRemoveProductType(item.id)}>Remove</Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -124,9 +177,13 @@ const ProductTypesPage = () => {
             <Typography id="modal-modal-title" variant="h6" component="h2">
               Add A New Product Type
             </Typography>
-            <TextField id="standard-basic" label="Product Type Name" variant="standard" />
-            <TextField id="standard-basic" label="Image URL" variant="standard" />
-            <Button className='addnewproducttypebutton' variant='contained'>Submit</Button>
+            <TextField id="standard-basic" label="Product Type Name" variant="standard" onChange={(e)=> {
+              setNewProductType({...newProductType, product_type_name: e.target.value})
+            }} />
+            <TextField id="standard-basic" label="Image URL" variant="standard" onChange={(e)=> {
+              setNewProductType({...newProductType, image: e.target.value})
+            }} />
+            <Button className='addnewproducttypebutton' variant='contained' onClick={handleAddProductType}>Submit</Button>
           </Box>
         </Modal>
       </div>
@@ -140,11 +197,15 @@ const ProductTypesPage = () => {
         >
           <Box sx={Modalstyle}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Edit Product Type
+              Edit Product Type {editModal.id}
             </Typography>
-            <TextField id="standard-basic" label="New Name" variant="standard" />
-            <TextField id="standard-basic" label="New Image URL" variant="standard" />
-            <Button className='addnewproducttypebutton' variant='contained'>Submit Edit</Button>
+            <TextField id="standard-basic" label={editModal.product_type_name} variant="standard" onChange={(e)=> {
+              setEditProductType({...editProductType, product_type_name: e.target.value})
+            }} />
+            <TextField id="standard-basic" label={editModal.image} variant="standard" onChange={(e)=> {
+              setEditProductType({...editProductType, image: e.target.value})
+            }}/>
+            <Button className='addnewproducttypebutton' variant='contained' onClick={() => {handleEditProductType(editModal.id)}}>Submit Edit</Button>
           </Box>
         </Modal>
       </div>
