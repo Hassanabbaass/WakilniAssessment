@@ -4,7 +4,7 @@
     background-color: #2b7a78 !important;
 }
 .navtitle{
-    font-weight: bold;
+    font-weight: bold !important;
     color: #ffffff !important;
     display: flex;
     align-items: center;
@@ -15,11 +15,11 @@
     color: #ffffff !important;
 }
 .navbtn{
-    height: 3rem;
-    font-size: 30px;
-    border-radius: 12px;
+    height: 3rem !important;
+    font-size: 30px !important;
+    border-radius: 12px !important;
     background-color: #2b7a78 !important;
-    margin: 10px;
+    margin: 10px !important;
 }
 
 
@@ -40,7 +40,7 @@
 }
 
 .productTypeButton{
-    margin: 5px;
+    margin: 5px !important;
 }
 
 .productTypeh1{
@@ -55,14 +55,14 @@
 
 .searchbar{
     background-color: white;
-    width: 25vw;
-    margin: 5px;
+    width: 25vw !important;
+    margin: 5px !important;
 }
 
 .addnewproducttypebutton{
     background-color: #17252a !important;
-    margin: 5px;
-    height: 7vh;
+    margin: 5px !important;
+    height: 7vh !important;
 }
 .addnewproducttypebutton:hover{
     background-color: #2b7a78 !important;

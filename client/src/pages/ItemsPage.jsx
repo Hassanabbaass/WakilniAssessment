@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,9 +11,13 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import Checkbox from '@mui/material/Checkbox';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { getItems } from '../services/getItems';
+import { addItem } from '../services/addItem';
+import { deleteItem } from '../services/deleteItem';
+import { updateItem } from '../services/updateItem';
+import { changeStatus } from '../services/changeStatus';
 
 const Modalstyle = {
     position: 'absolute',
@@ -42,18 +46,86 @@ const ItemsPage = () => {
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
 
-  const productTypeData = [
-  {
-    id: 1,
-    name: "Helicopter Lego",
-    serialNumber: '3333',
-  },
-  {
-    id: 2,
-    name: "Batman Lego",
-    serialNumber: '4444',
-  },
-];
+  const location = useLocation();
+  const productTypeId = location.pathname.split('/')[2]
+
+  const [itemsData, setItemsData] = useState([])
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredTableData = itemsData.filter(item =>
+    item.serial.toString().includes(searchTerm)
+  );
+//   const [filteredData, setFilteredData] = useState([]);
+
+//   const handleSearch = (e) => {
+//     const value = e.target.value
+//     const filtered = itemsData.filter(item => item.serial.toString().includes(value))
+//     setFilteredData(filtered)
+//   }
+
+  useEffect(() => {
+    getItems(productTypeId).then((result) => {
+        setItemsData(result.data)
+        // setFilteredData(result.data)
+    }).catch((err) => {
+        console.log(err)
+    })
+  },[itemsData, productTypeId])
+
+  const [newItem, setNewItem] = useState({
+    name:"",
+    serial: ""
+  })
+
+  const handleAddNewItem = (e) => {
+    e.preventDefault();
+    addItem(productTypeId, newItem).then((result)=> {
+        console.log(result)
+    }).catch((err) => {
+        console.log(err)
+    })
+  }
+
+  const handleItemDelete = (itemId) => {
+    deleteItem(itemId).then((result)=> {
+        console.log(result)
+    }).catch((err) => {
+        console.log(err)
+    })
+  }
+
+  const handleChecked = (itemId) => {
+    changeStatus(itemId).then((result)=> {
+        console.log(result)
+    }).catch((err) => {
+        console.log(err)
+    })
+  }
+
+  const [editModal, setEditModal] = useState({
+    id: "",
+    name: "",
+    serial: ""
+  })
+
+  const [editItem , setEditItem] = useState({
+    name: "",
+    serial: ""
+  })
+
+  const handleEditItem = (itemId) => {
+    updateItem(editItem, itemId).then((result)=> {
+        console.log(result)
+    }).catch((err) => {
+        console.log(err)
+    })
+  }
+
+
   return (
     <div className='itemsDiv'>
     <Button className='navbtn' color="inherit">
@@ -67,6 +139,7 @@ const ItemsPage = () => {
           label="Search By Serial Number"
           multiline
           maxRows={4}
+          onChange={handleSearch}
         />
       <Button onClick={handleOpen} className='addnewproducttypebutton' variant='contained'>Add New Item</Button>
     </div>
@@ -82,7 +155,7 @@ const ItemsPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {productTypeData.map((item) => (
+          {filteredTableData.map((item) => (
             <TableRow
               key={item.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -94,14 +167,17 @@ const ItemsPage = () => {
                 {item.name}
               </TableCell>
               <TableCell align="center">
-                {item.serialNumber}
+                {item.serial}
               </TableCell>
               <TableCell align="center">
-                <Button className='productTypeButton' variant='contained' color='primary' onClick={handleOpen2} >Edit</Button>
-                <Button className='productTypeButton' variant='contained' color='error'>Remove</Button>
+                <Button className='productTypeButton' variant='contained' color='primary' onClick={()=>{
+                    handleOpen2()
+                    setEditModal(item)
+                    }} >Edit</Button>
+                <Button className='productTypeButton' variant='contained' color='error' onClick={() => handleItemDelete(item.id)}>Remove</Button>
               </TableCell>
               <TableCell align="center">
-                <Checkbox/>
+                <input type='checkbox' checked={item.checked} onChange={() => handleChecked(item.id)}/>
               </TableCell>
             </TableRow>
           ))}
@@ -120,9 +196,13 @@ const ItemsPage = () => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Add A New Item
           </Typography>
-          <TextField id="standard-basic" label="Item Name" variant="standard" />
-          <TextField id="standard-basic" label="Item Serial Number" variant="standard" />
-          <Button className='addnewproducttypebutton' variant='contained'>Submit</Button>
+          <TextField id="standard-basic" label="Item Name" variant="standard" onChange={(e)=> {
+              setNewItem({...newItem, name: e.target.value})
+            }} />
+          <TextField id="standard-basic" label="Item Serial Number" variant="standard" onChange={(e)=> {
+              setNewItem({...newItem, serial: e.target.value})
+            }}/>
+          <Button className='addnewproducttypebutton' variant='contained' onClick={handleAddNewItem}>Submit</Button>
         </Box>
       </Modal>
     </div>
@@ -136,11 +216,15 @@ const ItemsPage = () => {
       >
         <Box sx={Modalstyle}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Edit Item
+            Edit Item {editModal.id}
           </Typography>
-          <TextField id="standard-basic" label="New Name" variant="standard" />
-          <TextField id="standard-basic" label="New Serial Number" variant="standard" />
-          <Button className='addnewproducttypebutton' variant='contained'>Submit Edit</Button>
+          <TextField id="standard-basic" label={editModal.name} variant="standard" onChange={(e)=> {
+              setEditItem({...editItem, name: e.target.value})
+            }}  />
+          <TextField id="standard-basic" label={editModal.serial} variant="standard" onChange={(e)=> {
+              setEditItem({...editItem, serial: e.target.value})
+            }}  />
+          <Button className='addnewproducttypebutton' variant='contained' onClick={() => {handleEditItem(editModal.id)}}  >Submit Edit</Button>
         </Box>
       </Modal>
     </div>

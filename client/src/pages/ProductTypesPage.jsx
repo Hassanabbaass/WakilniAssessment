@@ -88,23 +88,30 @@ const ProductTypesPage = () => {
 
     const [productTypeData, setProductTypeData] = useState([])
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredData, setFilteredData] = useState([]);
 
-    const handleSearch = (e) => {
-      const value = e.target.value.toLowerCase();
-      setSearchTerm(value)
-      const filtered = productTypeData.filter(item => item.product_type_name.toLowerCase().includes(value))
-      setFilteredData(filtered)
-    }
+    const handleSearch = (event) => {
+      setSearchTerm(event.target.value);
+    };
+  
+    const filteredTableData = productTypeData.filter(item =>
+      item.product_type_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    // const [filteredData, setFilteredData] = useState([]);
 
-    useEffect(() => {
+    // const handleSearch = (e) => {
+    //   const value = e.target.value.toLowerCase();
+    //   const filtered = productTypeData.filter(item => item.product_type_name.toLowerCase().includes(value))
+    //   setFilteredData(filtered)
+    // }
+
+    useEffect( () => {
       getProductTypes().then((result) => {
         setProductTypeData(result.data)
-        setFilteredData(result.data)
+        // setFilteredData(result.data)
       }).catch((err) => {
         console.log(err)
       })
-    }, [])
+    }, [productTypeData])
 
   const handleGoTo = (id) => {
     navigate(`/items/${id}`)
@@ -136,7 +143,7 @@ const ProductTypesPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.map((item) => (
+            {filteredTableData.map((item) => (
               <TableRow
                 key={item.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
